@@ -34,5 +34,5 @@ public class Sacola {
 
     @Enumerated
     private FormaPagamento formaPagamento;
-    private boolean fachada;
+    private boolean fechada;
 }
