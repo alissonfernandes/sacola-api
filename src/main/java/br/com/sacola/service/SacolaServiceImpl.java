@@ -11,6 +11,7 @@ import br.com.sacola.resource.dto.ItemDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -45,9 +46,18 @@ public class SacolaServiceImpl implements SacolaService {
             if (restauranteAtual.equals(restauranteItemAdicionar)) itensSacola.add(itemToInsert);
             else throw new RuntimeException("Não é possivel adicionar produtos de restaurante diferentes.");
         }
+        
+        List<Double> valorTotalItens = new ArrayList<>();
+
+        itensSacola.forEach(item -> valorTotalItens.add(item.getProduto().getValorUnitario() * item.getQuantidade()));
+
+        double valorTotalSacola = valorTotalItens.stream()
+                .mapToDouble(valorTotalDeCadaItem -> valorTotalDeCadaItem).sum();
+
+        sacola.setValorTotal(valorTotalSacola);
 
         sacolaRepository.save(sacola);
-        return itemRepository.save(itemToInsert);
+        return itemToInsert;
     }
 
     @Override
