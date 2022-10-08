@@ -23,7 +23,7 @@ public class SacolaServiceImpl implements SacolaService {
 
     @Override
     public Item incluirItemNaSacola(ItemDTO itemDTO) {
-        Sacola sacola = this.verSacola(itemDTO.getIdSacola());
+        Sacola sacola = this.verSacola(itemDTO.getSacolaId());
 
         if (sacola.isFechada()) throw new RuntimeException("Esta sacola está fechada");
 
