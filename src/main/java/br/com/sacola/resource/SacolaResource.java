@@ -4,12 +4,14 @@ import br.com.sacola.model.Item;
 import br.com.sacola.model.Sacola;
 import br.com.sacola.resource.dto.ItemDTO;
 import br.com.sacola.service.SacolaService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/ifood/sacolas")
 @RequiredArgsConstructor
+@Api(value = "/v1/ifood/sacolas")
 public class SacolaResource {
 
     private final SacolaService sacolaService;
