@@ -14,5 +14,9 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Endereco {
     private String cep;
+    private String cidade;
+    private String estadoUf;
+    private String bairro;
+    private String numero;
     private String complemento;
 }
