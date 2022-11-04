@@ -2,6 +2,7 @@ package br.com.sacola.service;
 
 import br.com.sacola.enumeration.FormaPagamento;
 import br.com.sacola.exception.BagIsClosedException;
+import br.com.sacola.exception.BagNotFoundException;
 import br.com.sacola.model.Item;
 import br.com.sacola.model.Restaurante;
 import br.com.sacola.model.Sacola;
@@ -24,7 +25,7 @@ public class SacolaServiceImpl implements SacolaService {
     private final ItemRepository itemRepository;
 
     @Override
-    public Item incluirItemNaSacola(ItemDTO itemDTO) throws BagIsClosedException {
+    public Item incluirItemNaSacola(ItemDTO itemDTO) throws BagIsClosedException, BagNotFoundException {
         Sacola sacola = this.verSacola(itemDTO.getSacolaId());
 
         if (sacola.isFechada()) throw new BagIsClosedException(sacola.getId());
@@ -62,15 +63,13 @@ public class SacolaServiceImpl implements SacolaService {
     }
 
     @Override
-    public Sacola verSacola(Long id) {
+    public Sacola verSacola(Long id) throws BagNotFoundException {
         return sacolaRepository.findById(id)
-                .orElseThrow(
-                () -> {throw new RuntimeException("Essa Sacola não existe!");}
-                );
+                .orElseThrow( () -> new BagNotFoundException(id));
     }
 
     @Override
-    public Sacola fecharSacola(Long id, int formaPagamento) {
+    public Sacola fecharSacola(Long id, int formaPagamento) throws BagNotFoundException {
         Sacola sacola = this.verSacola(id);
 
         if (sacola.getItems().isEmpty()) throw new RuntimeException("Inclua itens na sacola!");
