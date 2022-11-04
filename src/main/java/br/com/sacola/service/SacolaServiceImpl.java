@@ -4,6 +4,7 @@ import br.com.sacola.enumeration.FormaPagamento;
 import br.com.sacola.exception.BagIsClosedException;
 import br.com.sacola.exception.BagIsEmptyException;
 import br.com.sacola.exception.BagNotFoundException;
+import br.com.sacola.exception.ProductDifferentException;
 import br.com.sacola.model.Item;
 import br.com.sacola.model.Restaurante;
 import br.com.sacola.model.Sacola;
@@ -26,7 +27,7 @@ public class SacolaServiceImpl implements SacolaService {
     private final ItemRepository itemRepository;
 
     @Override
-    public Item incluirItemNaSacola(ItemDTO itemDTO) throws BagIsClosedException, BagNotFoundException {
+    public Item incluirItemNaSacola(ItemDTO itemDTO) throws BagIsClosedException, BagNotFoundException, ProductDifferentException {
         Sacola sacola = this.verSacola(itemDTO.getSacolaId());
 
         if (sacola.isFechada()) throw new BagIsClosedException(sacola.getId());
@@ -47,7 +48,7 @@ public class SacolaServiceImpl implements SacolaService {
             Restaurante restauranteItemAdicionar = itemToInsert.getProduto().getRestaurante();
 
             if (restauranteAtual.equals(restauranteItemAdicionar)) itensSacola.add(itemToInsert);
-            else throw new RuntimeException("Não é possivel adicionar produtos de restaurante diferentes.");
+            else throw new ProductDifferentException(itemToInsert.getProduto().getId());
         }
         
         List<Double> valorTotalItens = new ArrayList<>();
