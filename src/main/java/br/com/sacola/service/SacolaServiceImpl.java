@@ -1,6 +1,7 @@
 package br.com.sacola.service;
 
 import br.com.sacola.enumeration.FormaPagamento;
+import br.com.sacola.exception.BagIsClosedException;
 import br.com.sacola.model.Item;
 import br.com.sacola.model.Restaurante;
 import br.com.sacola.model.Sacola;
@@ -23,10 +24,10 @@ public class SacolaServiceImpl implements SacolaService {
     private final ItemRepository itemRepository;
 
     @Override
-    public Item incluirItemNaSacola(ItemDTO itemDTO) {
+    public Item incluirItemNaSacola(ItemDTO itemDTO) throws BagIsClosedException {
         Sacola sacola = this.verSacola(itemDTO.getSacolaId());
 
-        if (sacola.isFechada()) throw new RuntimeException("Esta sacola está fechada");
+        if (sacola.isFechada()) throw new BagIsClosedException(sacola.getId());
 
         Item itemToInsert = Item.builder()
                 .quantidade(itemDTO.getQuantidade())
