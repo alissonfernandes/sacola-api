@@ -2,6 +2,7 @@ package br.com.sacola.service;
 
 import br.com.sacola.enumeration.FormaPagamento;
 import br.com.sacola.exception.BagIsClosedException;
+import br.com.sacola.exception.BagIsEmptyException;
 import br.com.sacola.exception.BagNotFoundException;
 import br.com.sacola.model.Item;
 import br.com.sacola.model.Restaurante;
@@ -69,10 +70,10 @@ public class SacolaServiceImpl implements SacolaService {
     }
 
     @Override
-    public Sacola fecharSacola(Long id, int formaPagamento) throws BagNotFoundException {
+    public Sacola fecharSacola(Long id, int formaPagamento) throws BagNotFoundException, BagIsEmptyException {
         Sacola sacola = this.verSacola(id);
 
-        if (sacola.getItems().isEmpty()) throw new RuntimeException("Inclua itens na sacola!");
+        if (sacola.getItems().isEmpty()) throw new BagIsEmptyException(sacola.getId());
 
         FormaPagamento fPagamento = formaPagamento == 0 ? FormaPagamento.DINHEIRO : FormaPagamento.MAQUINETA;
 
