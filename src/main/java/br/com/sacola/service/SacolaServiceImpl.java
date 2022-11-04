@@ -1,10 +1,7 @@
 package br.com.sacola.service;
 
 import br.com.sacola.enumeration.FormaPagamento;
-import br.com.sacola.exception.BagIsClosedException;
-import br.com.sacola.exception.BagIsEmptyException;
-import br.com.sacola.exception.BagNotFoundException;
-import br.com.sacola.exception.ProductDifferentException;
+import br.com.sacola.exception.*;
 import br.com.sacola.model.Item;
 import br.com.sacola.model.Restaurante;
 import br.com.sacola.model.Sacola;
@@ -27,7 +24,7 @@ public class SacolaServiceImpl implements SacolaService {
     private final ItemRepository itemRepository;
 
     @Override
-    public Item incluirItemNaSacola(ItemDTO itemDTO) throws BagIsClosedException, BagNotFoundException, ProductDifferentException {
+    public Item incluirItemNaSacola(ItemDTO itemDTO) throws BagIsClosedException, BagNotFoundException, ProductDifferentException, ProductNotFoundException {
         Sacola sacola = this.verSacola(itemDTO.getSacolaId());
 
         if (sacola.isFechada()) throw new BagIsClosedException(sacola.getId());
@@ -35,7 +32,7 @@ public class SacolaServiceImpl implements SacolaService {
         Item itemToInsert = Item.builder()
                 .quantidade(itemDTO.getQuantidade())
                 .sacola(sacola)
-                .produto(produtoRepository.findById(itemDTO.getProdutoId()).orElseThrow(() -> {throw new RuntimeException("Esse produto não existe!");}))
+                .produto(produtoRepository.findById(itemDTO.getProdutoId()).orElseThrow(() -> new ProductNotFoundException(itemDTO.getProdutoId())))
                 .build();
 
 
