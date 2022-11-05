@@ -1,5 +1,7 @@
 package br.com.sacola.resource;
 
+import br.com.sacola.enumeration.FormaPagamento;
+import br.com.sacola.exception.BagIsEmptyException;
 import br.com.sacola.exception.BagNotFoundException;
 import br.com.sacola.service.SacolaServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,10 +21,8 @@ import static org.hamcrest.core.Is.is;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.not;
@@ -47,6 +47,7 @@ public class SacolaResourceTest {
     SacolaResource sacolaResource;
 
     private final Long INVALID_ID = 0L;
+    private final Long VALID_ID = 1L;
     private final String SACOLA_API_URL_PATH = "/v1/ifood/sacolas";
 
     @BeforeEach
@@ -65,7 +66,22 @@ public class SacolaResourceTest {
         mockMvc.perform(get(SACOLA_API_URL_PATH + "/" + INVALID_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound());
-
     }
 
+    @Test
+    @DisplayName("when method HTTP PATCH 'fecharSacola' is called with ID invalid then return a exception")
+    void httpPatchFecharSacolaWithInvalidId() throws Exception {
+        when(sacolaService.fecharSacola(INVALID_ID, 1)).thenThrow(BagNotFoundException.class);
+
+        mockMvc.perform(patch(SACOLA_API_URL_PATH + "/fecharSacola/" + INVALID_ID +"?formaPagamento=1")
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("when method HTTP PATCH 'fecharSacola' is called and bag is empty then return a exception")
+    void httpPatchFecharSacolaWhenBagIsEmpty() throws Exception {
+        when(sacolaService.fecharSacola(VALID_ID, 1)).thenThrow(BagIsEmptyException.class);
+        mockMvc.perform(patch(SACOLA_API_URL_PATH + "/fecharSacola/" + VALID_ID +"?formaPagamento=1")
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable());
+    }
 }
