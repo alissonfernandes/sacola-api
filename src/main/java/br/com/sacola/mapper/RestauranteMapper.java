@@ -20,6 +20,40 @@ public class RestauranteMapper {
                 .endereco(this.enderecoDTOToModel(restauranteDTO.getEndereco())).build();
     }
 
+    public RestauranteDTO restauranteToDTO(Restaurante restaurante) {
+        return RestauranteDTO.builder()
+                .id(restaurante.getId())
+                .nome(restaurante.getNome())
+                .cardapio(this.listProdutoToDTO(restaurante.getCardapio()))
+                .endereco(this.enderecoToDTO(restaurante.getEndereco()))
+                .build();
+    }
+
+    private List<ProdutoDTO> listProdutoToDTO(List<Produto> listProduto) {
+        return listProduto.stream().map( produto ->
+                {
+                    ProdutoDTO produtoDTO = ProdutoDTO.builder()
+                            .id(produto.getId())
+                            .nome(produto.getNome())
+                            .valorUnitario(produto.getValorUnitario())
+                            .disponivel(produto.getDisponivel())
+                            .build();
+                    return produtoDTO;
+                }
+        ).collect(Collectors.toList());
+    }
+
+    private EnderecoDTO enderecoToDTO(Endereco endereco) {
+        return EnderecoDTO.builder()
+                .cep(endereco.getCep())
+                .cidade(endereco.getCidade())
+                .estadoUf(endereco.getEstadoUf())
+                .bairro(endereco.getBairro())
+                .numero(endereco.getNumero())
+                .complemento(endereco.getComplemento())
+                .build();
+    }
+
     private List<Produto> restauranteToModelListProduto(List<ProdutoDTO> listProdutoDTO) {
         return listProdutoDTO.stream().map(produtoDTO ->
         {
