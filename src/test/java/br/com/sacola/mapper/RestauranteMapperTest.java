@@ -43,4 +43,34 @@ public class RestauranteMapperTest {
         assertEquals(enderecoDTO.getNumero(), endereco.getNumero());
         assertEquals(enderecoDTO.getComplemento(), endereco.getComplemento());
     }
+
+    @Test
+    @DisplayName("restauranteModel to restauranteDTO")
+    void restauranteToDTO() {
+        RestauranteDTO restauranteDTOToRestaurante = RestauranteDTOBuilder.builder().build().toRestauranteDTO();
+        Restaurante restaurante = restauranteMapper.restauranteToModel(restauranteDTOToRestaurante);
+
+        RestauranteDTO restauranteDTO = restauranteMapper.restauranteToDTO(restaurante);
+
+        assertEquals(restaurante.getId(), restauranteDTO.getId());
+        assertEquals(restaurante.getNome(), restauranteDTO.getNome());
+
+        Produto produto = restaurante.getCardapio().get(0);
+        ProdutoDTO produtoDTO = restauranteDTO.getCardapio().get(0);
+
+        assertEquals(produto.getId(), produtoDTO.getId());
+        assertEquals(produto.getNome(), produtoDTO.getNome());
+        assertEquals(produto.getValorUnitario(), produtoDTO.getValorUnitario());
+        assertEquals(produto.getDisponivel(), produtoDTO.getDisponivel());
+
+        Endereco endereco = restaurante.getEndereco();
+        EnderecoDTO enderecoDTO = restauranteDTO.getEndereco();
+
+        assertEquals(endereco.getCep(), enderecoDTO.getCep());
+        assertEquals(endereco.getCidade(), enderecoDTO.getCidade());
+        assertEquals(endereco.getEstadoUf(), enderecoDTO.getEstadoUf());
+        assertEquals(endereco.getBairro(), enderecoDTO.getBairro());
+        assertEquals(endereco.getNumero(), enderecoDTO.getNumero());
+        assertEquals(endereco.getComplemento(), enderecoDTO.getComplemento());
+    }
 }
