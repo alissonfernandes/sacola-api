@@ -22,6 +22,8 @@ public class RestauranteResource {
         return restauranteService.addNewRestaurant(restauranteDTO);
     }
 
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.UPGRADE_REQUIRED)
     public RestauranteDTO updateRestaurante(@PathVariable Long id, @RequestBody RestauranteDTO restauranteDTO) throws RestaurantNotFoundException {
         return restauranteService.updateRestaurant(id, restauranteDTO);
     }
