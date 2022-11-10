@@ -7,5 +7,5 @@ public interface RestauranteService {
 
     RestauranteDTO addNewRestaurant(RestauranteDTO restauranteDTO);
     RestauranteDTO updateRestaurant(Long id, RestauranteDTO restauranteDTO) throws RestaurantNotFoundException;
-    void removeRestaurant(Long id);
+    void removeRestaurant(Long id) throws RestaurantNotFoundException;
 }

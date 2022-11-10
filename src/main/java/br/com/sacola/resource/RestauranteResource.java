@@ -27,4 +27,10 @@ public class RestauranteResource {
     public RestauranteDTO updateRestaurante(@PathVariable Long id, @RequestBody RestauranteDTO restauranteDTO) throws RestaurantNotFoundException {
         return restauranteService.updateRestaurant(id, restauranteDTO);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void removeRestaurante(@PathVariable Long id) throws RestaurantNotFoundException {
+        restauranteService.removeRestaurant( id);
+    }
 }

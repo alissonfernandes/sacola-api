@@ -2,15 +2,9 @@ package br.com.sacola.service;
 
 import br.com.sacola.exception.RestaurantNotFoundException;
 import br.com.sacola.mapper.RestauranteMapper;
-import br.com.sacola.model.Produto;
 import br.com.sacola.model.Restaurante;
 import br.com.sacola.repository.RestauranteRepository;
-import br.com.sacola.resource.dto.ProdutoDTO;
 import br.com.sacola.resource.dto.RestauranteDTO;
-
-import javax.swing.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class RestauranteServiceImpl implements RestauranteService{
 
@@ -35,8 +29,9 @@ public class RestauranteServiceImpl implements RestauranteService{
     }
 
     @Override
-    public void removeRestaurant(Long id) {
-
+    public void removeRestaurant(Long id) throws RestaurantNotFoundException {
+        Restaurante restaurante = this.verifyExists(id);
+        restauranteRepository.deleteById(id);
     }
 
     private Restaurante verifyExists(Long id) throws RestaurantNotFoundException {
