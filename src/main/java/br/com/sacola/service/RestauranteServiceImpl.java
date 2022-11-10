@@ -1,5 +1,6 @@
 package br.com.sacola.service;
 
+import br.com.sacola.exception.RestaurantNotFoundException;
 import br.com.sacola.mapper.RestauranteMapper;
 import br.com.sacola.model.Produto;
 import br.com.sacola.model.Restaurante;
@@ -25,9 +26,12 @@ public class RestauranteServiceImpl implements RestauranteService{
     }
 
     @Override
-    public RestauranteDTO updateRestaurant(RestauranteDTO restauranteDTO) {
-
-        return null;
+    public RestauranteDTO updateRestaurant(Long id, RestauranteDTO restauranteDTO) throws RestaurantNotFoundException {
+        Restaurante restaurante = verifyExists(id);
+        restauranteDTO.setId(id);
+        Restaurante restauranteToSave = restauranteMapper.restauranteToModel(restauranteDTO);
+        Restaurante restauranteSaved = restauranteRepository.save(restauranteToSave);
+        return restauranteMapper.restauranteToDTO(restauranteSaved);
     }
 
     @Override
@@ -35,4 +39,7 @@ public class RestauranteServiceImpl implements RestauranteService{
 
     }
 
+    private Restaurante verifyExists(Long id) throws RestaurantNotFoundException {
+        return restauranteRepository.findById(id).orElseThrow(() -> new RestaurantNotFoundException(id));
+    }
 }

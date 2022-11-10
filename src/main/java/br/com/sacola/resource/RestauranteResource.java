@@ -1,5 +1,6 @@
 package br.com.sacola.resource;
 
+import br.com.sacola.exception.RestaurantNotFoundException;
 import br.com.sacola.resource.dto.RestauranteDTO;
 import br.com.sacola.service.RestauranteService;
 import io.swagger.annotations.Api;
@@ -19,5 +20,9 @@ public class RestauranteResource {
     @ResponseStatus(HttpStatus.CREATED)
     public RestauranteDTO addNewRestaurante(@RequestBody RestauranteDTO restauranteDTO){
         return restauranteService.addNewRestaurant(restauranteDTO);
+    }
+
+    public RestauranteDTO updateRestaurante(@PathVariable Long id, @RequestBody RestauranteDTO restauranteDTO) throws RestaurantNotFoundException {
+        return restauranteService.updateRestaurant(id, restauranteDTO);
     }
 }
