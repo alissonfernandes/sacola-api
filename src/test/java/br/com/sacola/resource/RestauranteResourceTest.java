@@ -1,6 +1,7 @@
 package br.com.sacola.resource;
 
 import br.com.sacola.builder.RestauranteDTOBuilder;
+import br.com.sacola.exception.RestaurantNotFoundException;
 import br.com.sacola.resource.dto.ProdutoDTO;
 import br.com.sacola.resource.dto.RestauranteDTO;
 import br.com.sacola.service.RestauranteService;
@@ -22,9 +23,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import static org.mockito.Mockito.*;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,7 +57,7 @@ public class RestauranteResourceTest {
     }
 
     @Test
-    @DisplayName("when method HTTP POST 'addNewRestaurante' is called with valid id then return a restaurante")
+    @DisplayName("when method HTTP POST 'addNewRestaurante' is called then return a restaurante")
     void httpPostAddNewRestaurante() throws Exception {
         RestauranteDTO restauranteDTO = RestauranteDTOBuilder.builder().build().toRestauranteDTO();
         ProdutoDTO produtoDTO = restauranteDTO.getCardapio().get(0);
@@ -82,5 +81,31 @@ public class RestauranteResourceTest {
                 .andExpect(jsonPath("$.endereco.numero").value(equalTo(restauranteDTO.getEndereco().getNumero())))
                 .andExpect(jsonPath("$.endereco.complemento").value(equalTo(restauranteDTO.getEndereco().getComplemento())));
 
+    }
+
+    @Test
+    @DisplayName("when method HTTP PUT 'updateRestaurante' is called with valid id then return a restaurante")
+    void httpPutUpdateRestaurante() throws Exception {
+        RestauranteDTO restauranteDTO = RestauranteDTOBuilder.builder().build().toRestauranteDTO();
+        ProdutoDTO produtoDTO = restauranteDTO.getCardapio().get(0);
+
+        when(restauranteService.updateRestaurant(restauranteDTO.getId(), restauranteDTO)).thenReturn(restauranteDTO);
+
+        mockMvc.perform(put(RESTAURANTE_API_URL_PATH + "/" + VALID_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(restauranteDTO)))
+                .andExpect(status().isUpgradeRequired())
+                .andExpect(jsonPath("$.id", is(restauranteDTO.getId().intValue())))
+                .andExpect(jsonPath("$.nome", is(restauranteDTO.getNome())))
+                .andExpect(jsonPath("$.cardapio[0].id").value(equalTo(produtoDTO.getId().intValue())))
+                .andExpect(jsonPath("$.cardapio[0].nome").value(equalTo(produtoDTO.getNome())))
+                .andExpect(jsonPath("$.cardapio[0].valorUnitario").value(equalTo(produtoDTO.getValorUnitario())))
+                .andExpect(jsonPath("$.cardapio[0].disponivel").value(equalTo(produtoDTO.getDisponivel())))
+                .andExpect(jsonPath("$.endereco.cep").value(equalTo(restauranteDTO.getEndereco().getCep())))
+                .andExpect(jsonPath("$.endereco.cidade").value(equalTo(restauranteDTO.getEndereco().getCidade())))
+                .andExpect(jsonPath("$.endereco.estadoUf").value(equalTo(restauranteDTO.getEndereco().getEstadoUf())))
+                .andExpect(jsonPath("$.endereco.bairro").value(equalTo(restauranteDTO.getEndereco().getBairro())))
+                .andExpect(jsonPath("$.endereco.numero").value(equalTo(restauranteDTO.getEndereco().getNumero())))
+                .andExpect(jsonPath("$.endereco.complemento").value(equalTo(restauranteDTO.getEndereco().getComplemento())));
     }
 }
