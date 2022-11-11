@@ -108,4 +108,18 @@ public class RestauranteResourceTest {
                 .andExpect(jsonPath("$.endereco.numero").value(equalTo(restauranteDTO.getEndereco().getNumero())))
                 .andExpect(jsonPath("$.endereco.complemento").value(equalTo(restauranteDTO.getEndereco().getComplemento())));
     }
+
+    @Test
+    @DisplayName("when method HTTP PUT 'updateRestaurante' is called with invalid id then return exception")
+    void httpPutUpdateRestauranteWithInvalidId() throws Exception {
+        RestauranteDTO restauranteDTO = RestauranteDTOBuilder.builder().build().toRestauranteDTO();
+
+        when(restauranteService.updateRestaurant(INVALID_ID, restauranteDTO)).thenThrow(new RestaurantNotFoundException(INVALID_ID));
+
+        mockMvc.perform(put(RESTAURANTE_API_URL_PATH + "/" + INVALID_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(restauranteDTO)))
+                .andExpect(status().isNotFound());
+
+    }
 }
