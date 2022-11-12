@@ -122,4 +122,23 @@ public class RestauranteResourceTest {
                 .andExpect(status().isNotFound());
 
     }
+
+    @Test
+    @DisplayName("when method HTTP DELETE 'removeRestaurant' is called with valid id then return status code OK")
+    void httpDeleteRemoveRestaurante() throws Exception {
+        doNothing().when(restauranteService).removeRestaurant(VALID_ID);
+
+        mockMvc.perform(delete(RESTAURANTE_API_URL_PATH + "/" + VALID_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("when method HTTP DELETE 'removerestaurant' is called with invalid id then return status code exception")
+    void httpDeleteRemoveRestauranteWithInvalidId() throws Exception {
+        doThrow(RestaurantNotFoundException.class).when(restauranteService).removeRestaurant(INVALID_ID);
+
+        mockMvc.perform(delete(RESTAURANTE_API_URL_PATH + "/" + INVALID_ID)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+    }
 }
